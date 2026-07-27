@@ -4,7 +4,10 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "skipLibCheck": true,
+    "skipLibCheck": true, 
+    "paths": {
+      "@/*": ["./src/*"] // Псевдоним @/* означает «любой файл в проекте под src»
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",

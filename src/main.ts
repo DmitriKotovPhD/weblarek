@@ -5,9 +5,9 @@ import { Buyer } from '@/components/models/Buyer';
 import { apiProducts } from '@/utils/data';
 import { Api } from '@/components/base/Api';
 import { API_URL } from '@/utils/constants';
-import { BuyerValidationErrors } from '@/types';
+import { BuyerValidationErrors, IProductListResponse } from '@/types';
 import { ApiService } from '@/components/models/ApiService';
-import { TResponseError, IOrder } from '@/types';
+import { IOrder } from '@/types';
 
 
 /******** Проверка базового функционала на тестовом наборе данных ********/
@@ -96,60 +96,64 @@ const api = new Api( API_URL );
 const apiService = new ApiService(api);
 const catalogTestApiService = new Catalog();
 
-// Является ли объект объектом ошибки
-function isTResponseError(obj: any): obj is TResponseError {
-  return 'error' in obj;
-}
 
 /******** Тестирование работы с со слоем коммуникации с API ********/
 console.log('Получить все товары через API...');
-const requestProducts = await apiService.getProducts();
 
-if(isTResponseError(requestProducts)) {
-  console.log('Ошибка: ', requestProducts.error);
-} else {
+
+// Получить товары с сервера
+(async () => {
+  let requestProducts: IProductListResponse;
+  
+  try {
+    requestProducts = await apiService.getProducts();
+  } catch(error) {
+    console.log('Ошибка: ', error);
+    return;
+  }
+
   console.log('Ответ от API получен:');
   console.table(requestProducts.items);
   console.log('Записать ответ в каталог...');
   catalogTestApiService.setProductList(requestProducts.items);
   console.log('Результат после вставки в каталог: ');
   console.table(catalogTestApiService.getProductList());
-}
 
-console.log('Создать заказ...');
-const buyer2 = new Buyer();
-buyer2.setData({
-  payment: 'cash',
-  address: 'Russia, Mira st., 11a',
-  phone: '+74950000000',
-  email: 'test@yandex.ru'
-});
+  
 
-const cart2 = new Cart();
-console.log('Добавить 2 товара в корзину...');
-cart2.addItem( catalogTestApiService.getProductList()[0] );
-cart2.addItem( catalogTestApiService.getProductList()[1] );
-console.log('Товары в корзине: ');
-console.table( cart2.getItems() );
+  // Создать заказ
+  console.log('Создать заказ...');
+  const buyer2 = new Buyer();
+  buyer2.setData({
+    payment: 'cash',
+    address: 'Russia, Mira st., 11a',
+    phone: '+74950000000',
+    email: 'test@yandex.ru'
+  });
 
-// IOrder
-// payment: TPayment;
-// email: string;
-// phone: string;
-// address: string;
-// total: number;
-// items: string[];
-const order = <IOrder>Object.assign({
-  total: cart2.getSubtotal(),
-  items: cart2.getItems().map(item => item.id)
-}, 
-buyer2.getData());
 
-const orderResponse = await apiService.createOrder(order);
+  const cart2 = new Cart();
+  console.log('Добавить 2 товара в корзину...');
+  cart2.addItem( catalogTestApiService.getProductList()[0] );
+  cart2.addItem( catalogTestApiService.getProductList()[1] );
+  console.log('Товары в корзине: ');
+  console.table( cart2.getItems() );
 
-if(isTResponseError(orderResponse)) {
-  console.log('Ошибка: ', orderResponse.error);
-} else {
-  console.log('Ответ от API получен:');
-  console.log(orderResponse);
-}
+
+  const order = <IOrder>Object.assign({
+    total: cart2.getSubtotal(),
+    items: cart2.getItems().map(item => item.id)
+  }, 
+  buyer2.getData());
+
+  try {
+    const orderResponse = await apiService.createOrder(order);
+    console.log('Ответ от API получен:', orderResponse);
+  } catch(error) {
+    console.log('Ошибка: ', error);
+  }
+
+  console.log('ApiService test DONE.');
+})();
+
+console.log('READY.....');

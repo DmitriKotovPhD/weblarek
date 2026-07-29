@@ -23,12 +23,7 @@ export interface IBuyer {
     email: string;
 }
 
-export type BuyerValidationErrors = {
-    payment?: string,
-    address?: string
-    phone?: string,
-    email?: string,
-};
+export type BuyerValidationErrors = Partial<Record<keyof IBuyer, string>>;
 
 export const BuyerValidationMessages = {
     payment: 'Выберите способ оплаты',
@@ -42,11 +37,7 @@ export interface IProductListResponse {
     items: IProduct[];
 };
 
-export interface IOrder {
-    payment: TPayment;
-    email: string;
-    phone: string;
-    address: string;
+export interface IOrder extends IBuyer {
     total: number;
     items: string[];
 }
@@ -56,8 +47,4 @@ export interface IOrderResponse {
     total: number;
     name?: string;
     error?: string;
-}
-
-export interface TResponseError {
-    error: string;
 }

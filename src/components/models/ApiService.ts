@@ -1,24 +1,15 @@
-import { IApi, IProductListResponse, IOrderResponse, IOrder, TResponseError } from "@/types";
+import { IApi, IProductListResponse, IOrderResponse, IOrder } from "@/types";
 
 export class ApiService {
   constructor(private api: IApi) {
     this.api = api;
   }
 
-  async getProducts(): Promise<IProductListResponse | TResponseError> {
-    try{
-      return await this.api.get<IProductListResponse>('/product/');
-    } catch(error) {
-      debugger;
-      return { error } as TResponseError;
-    }
+  async getProducts(): Promise<IProductListResponse> {
+    return await this.api.get<IProductListResponse>('/product/');
   }
 
-  async createOrder(order: IOrder): Promise<IOrderResponse | TResponseError> {
-    try{
-      return await this.api.post<IOrderResponse>('/order/', order);
-    } catch(error) {
-      return { error } as TResponseError;
-    }
+  async createOrder(order: IOrder): Promise<IOrderResponse> {
+    return await this.api.post<IOrderResponse>('/order/', order);
   }
 }

@@ -1,5 +1,6 @@
 import { ensureAllElements, ensureElement } from "@/utils/utils";
 import { Component } from "../base/Component";
+import { IEvents } from "../base/Events";
 
 export abstract class Form<T> extends Component<T> {
   protected _fields: HTMLInputElement[];

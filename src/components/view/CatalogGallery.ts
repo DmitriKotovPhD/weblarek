@@ -1,4 +1,4 @@
-import { ensureElement } from "@/utils/utils";
+// import { ensureElement } from "@/utils/utils";
 import { Component } from "../base/Component";
 import { IEvents } from "../base/Events";
 
@@ -8,12 +8,19 @@ export interface ICatalogGallery {
 
 
 export class CatalogGallery extends Component<ICatalogGallery> {
-  protected _catalog: HTMLElement;
+  // protected _catalog: HTMLElement;
   
-  constructor(container: HTMLElement, protected eventBroker?: IEvents) {
+  constructor(container: HTMLElement, protected eventBroker: IEvents) {
     super(container);
 
-    this._catalog = ensureElement<HTMLElement>('.gallery', this.container);
+    // this._catalog = ensureElement<HTMLElement>('.gallery', this.container);
+    // eventBroker.on('catalog:item-click', (e) => {
+
+    // });
+
+    this.container.addEventListener('click', (e) => {
+      eventBroker.emit('catalog:item-click', e);
+    });
   }
 
   set items(value: HTMLElement[]) {

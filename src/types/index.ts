@@ -48,3 +48,8 @@ export interface IOrderResponse {
     name?: string;
     error?: string;
 }
+
+export interface IProductEvents {
+    click?: (e: MouseEvent) => void;
+    addToCart?: () => void;
+}

@@ -12,12 +12,14 @@ export class Modal extends Component<IModal> {
 
   // Открыть модальное окно
   open = (): void => {
-    this.container.classList.add('modal__active');
+    this.container.classList.add('modal_active');
+
+    this.eventBroker.emit('modal:open');
   };
 
   // Закрыть модальное окно
   close = (): void => {
-    this.container.classList.remove('modal__active');
+    this.container.classList.remove('modal_active');
   };
 
   constructor(container: HTMLElement, protected eventBroker: IEvents) {
@@ -31,6 +33,8 @@ export class Modal extends Component<IModal> {
       if(e.target === this.container 
       || e.target === this._closeButton) {
         this.close();
+
+        eventBroker.emit('modal:close');
       }
     });
   }

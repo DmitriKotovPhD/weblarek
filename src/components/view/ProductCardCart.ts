@@ -1,7 +1,7 @@
 import { ensureElement } from "@/utils/utils";
-import { ProductCard } from "./ProductCard";
+import { ProductCard, IProductCard } from "./ProductCard";
 
-export type IProductCardCart = `IProductCard & { index: number }`;
+export type IProductCardCart = IProductCard & { index: number };
 
 export class ProductCardCart extends ProductCard<IProductCardCart> {
   protected _index: HTMLElement;

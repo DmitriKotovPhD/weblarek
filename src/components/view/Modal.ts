@@ -21,6 +21,7 @@ export class Modal extends Component<IModal> {
   close = (): void => {
     this.container.classList.remove('modal_active');
   };
+  
 
   constructor(container: HTMLElement, protected eventBroker: IEvents) {
     super(container);
@@ -39,8 +40,12 @@ export class Modal extends Component<IModal> {
     });
   }
 
-  
+
   set content(value: HTMLElement) {
     this._content.replaceChildren(value);
+  }
+
+  get isOpen(): boolean {
+    return this.container.classList.contains('modal_active');
   }
 }

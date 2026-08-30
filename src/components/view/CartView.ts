@@ -21,7 +21,7 @@ export class CartView extends Component<ICartView> {
     this.checkoutButton = ensureElement<HTMLButtonElement>('.modal__actions > .basket__button', this.container);
 
     this.checkoutButton.addEventListener('click', (e: MouseEvent) => {
-      this.eventBroker.emit('cart:checkout');
+      this.eventBroker.emit('cart:submit');
     });
   }
 
@@ -33,11 +33,7 @@ export class CartView extends Component<ICartView> {
     this.subtotal.textContent = `${value} синапсов`;
   }
 
-  // addItem(value: HTMLElement): void {
-  //   // TODO
-  // }
-
-  enableCheckout(enable: boolean = true): void {
-    this.checkoutButton.disabled = !enable;
+  set checkoutEnabled(enabled: boolean) {
+    this.checkoutButton.disabled = !enabled;
   }
 }

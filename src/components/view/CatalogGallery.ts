@@ -14,13 +14,6 @@ export class CatalogGallery extends Component<ICatalogGallery> {
     super(container);
 
     // this._catalog = ensureElement<HTMLElement>('.gallery', this.container);
-    // eventBroker.on('catalog:item-click', (e) => {
-
-    // });
-
-    this.container.addEventListener('click', (e) => {
-      eventBroker.emit('catalog:item-click', e);
-    });
   }
 
   set items(value: HTMLElement[]) {

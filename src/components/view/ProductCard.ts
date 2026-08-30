@@ -10,7 +10,7 @@ export abstract class ProductCard<T extends IProductCard> extends Component<T> {
   protected _title: HTMLElement;
   protected _price: HTMLElement;
   
-  constructor(container: HTMLElement, data?: IProductCard) {
+  constructor(container: HTMLElement) {
     super(container);
 
     this._title = ensureElement<HTMLElement>('.card__title', this.container);

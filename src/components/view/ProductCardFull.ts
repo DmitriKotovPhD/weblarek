@@ -1,26 +1,39 @@
 import { IProduct, IProductEvents } from "@/types";
 import { ProductCardCatalog } from "./ProductCardCatalog";
-import { IProductCard } from "./ProductCard";
 import { ensureElement } from "@/utils/utils";
 
 export type IProductCardFull = Omit<IProduct, 'id'>;
 
 export class ProductCardFull extends ProductCardCatalog<IProductCardFull> {
   protected _description: HTMLElement;
-  protected _buttonBuy: HTMLButtonElement;
+  protected _actionButton: HTMLButtonElement;
   
-  constructor(container: HTMLElement, eventHandlers?: IProductEvents, data?: IProductCard) {
-    super(container, eventHandlers);
+  constructor(container: HTMLElement, eventHandlers?: IProductEvents) {
+    super(container);
 
     this._description = ensureElement<HTMLElement>('.card__text', this.container);
-    this._buttonBuy = ensureElement<HTMLButtonElement>('.card__button', this.container);
+    this._actionButton = ensureElement<HTMLButtonElement>('.card__button', this.container);
 
-    if(eventHandlers?.addToCart) {
-      this._buttonBuy.addEventListener('click', eventHandlers.addToCart);
+    // Пусть у кнопки покупки будет свой отдельный обработчик
+    if(eventHandlers?.actionButtonClick) {
+      this._actionButton.addEventListener('click', eventHandlers.actionButtonClick);
     }
   }
 
+  // Установить текст поля описания товара
   set description(value: string) {
     this._description.textContent = value;
+  }
+
+  // Установить текст кнопки действия на полной карточке товара
+  set actionButtonText(value: string) {
+    if(!value) return;
+
+    this._actionButton.textContent = value;
+  }
+
+  // Вкл-выкл кнопки действия
+  set actionButtonEnabled(enabled: boolean) {
+    this._actionButton.disabled = !enabled;
   }
 }

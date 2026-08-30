@@ -5,7 +5,21 @@ export interface IApi {
     post<T extends object>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
 }
 
-export type TPayment = 'card' | 'cash' | '';
+// Payment methods
+const PAYMENTS_MAP = {
+    card: 'card',
+    cash: 'cash',
+    none: ''
+};
+
+export type TPayment = typeof PAYMENTS_MAP[keyof typeof PAYMENTS_MAP];
+
+const VALID_PAYMENT_SET = new Set(Object.values(PAYMENTS_MAP));
+
+export function isValidPayment(value: unknown): value is TPayment {
+    return typeof value === 'string' && VALID_PAYMENT_SET.has(value);
+}
+
 
 export interface IProduct {
     id: string;
@@ -17,10 +31,10 @@ export interface IProduct {
 }
 
 export interface IBuyer {
-    payment: TPayment;
-    address: string;
-    phone: string;
-    email: string;
+    payment?: TPayment;
+    address?: string;
+    phone?: string;
+    email?: string;
 }
 
 export type BuyerValidationErrors = Partial<Record<keyof IBuyer, string>>;
@@ -51,5 +65,16 @@ export interface IOrderResponse {
 
 export interface IProductEvents {
     click?: (e: MouseEvent) => void;
-    addToCart?: () => void;
+    actionButtonClick?: () => void;       // add to cart
+    removeItem?: () => void;    // remove item from cart
+}
+
+export interface ICheckoutEvents {
+    checkout?: () => void;
+}
+
+export interface IUIEvents {
+    submit?: (e: Event) => void;
+    input?: () => void;
+    click?: () => void;
 }

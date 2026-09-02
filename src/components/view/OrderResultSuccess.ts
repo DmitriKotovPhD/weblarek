@@ -8,7 +8,7 @@ export interface IOrderResultSuccess {
 
 
 export class OrderResultSuccess extends Component<IOrderResultSuccess> {
-  private _title: HTMLElement;
+  private _title: HTMLElement;  // Заголовок возможно тоже нужно будет менять, но потом
   private _description: HTMLElement;
   private _closeButton: HTMLButtonElement;
 

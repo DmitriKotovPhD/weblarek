@@ -9,19 +9,7 @@ export interface IModal {
 export class Modal extends Component<IModal> {
   private _content: HTMLElement;
   private _closeButton: HTMLButtonElement;
-
-  // Открыть модальное окно
-  open = (): void => {
-    this.container.classList.add('modal_active');
-
-    this.eventBroker.emit('modal:open');
-  };
-
-  // Закрыть модальное окно
-  close = (): void => {
-    this.container.classList.remove('modal_active');
-  };
-  
+ 
 
   constructor(container: HTMLElement, protected eventBroker: IEvents) {
     super(container);
@@ -31,15 +19,31 @@ export class Modal extends Component<IModal> {
 
     // События
     this.container.addEventListener('click', (e: MouseEvent) => {
-      if(e.target === this.container 
-      || e.target === this._closeButton) {
-        this.close();
+      const target = e.target as Element;
+      
+      if(!target) return;
 
-        eventBroker.emit('modal:close');
+      if(target === this.container ||
+         this._closeButton.contains(target)) {
+          e.stopPropagation();
+          this.close();
       }
     });
   }
 
+    // Открыть модальное окно
+  open = (): void => {
+    if(this.isOpen) return;
+    this.container.classList.add('modal_active');
+    this.eventBroker.emit('modal:open');
+  };
+
+  // Закрыть модальное окно
+  close = (): void => {
+    if(!this.isOpen) return;
+    this.container.classList.remove('modal_active');
+    this.eventBroker.emit('modal:close');
+  };
 
   set content(value: HTMLElement) {
     this._content.replaceChildren(value);

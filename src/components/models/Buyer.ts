@@ -1,13 +1,14 @@
-import { TPayment, IBuyer, BuyerValidationErrors, BuyerValidationMessages, isValidPayment } from "@/types";
+import { TPayment, IBuyer, BuyerValidationErrors, isValidPayment } from "@/types";
+import { BuyerValidationMessages } from "@/utils/constants";
 import { IEvents } from "../base/Events";
 
 export class Buyer {
   private payment: TPayment = '';
-  private address: string = '';
-  private phone: string = '';
   private email: string = '';
+  private phone: string = '';
+  private address: string = '';
 
-  private _validators = new Map();
+  private _validators = new Map<string, Function>();
 
   constructor(protected eventBroker: IEvents) {
     this.clearAll();
@@ -36,7 +37,7 @@ export class Buyer {
     this.email = '';
   }
 
-  initValidators() {
+  initValidators(): void {
     this._validators.set('default', (value: string) => {
       return value !== '';
     });
@@ -97,7 +98,7 @@ export class Buyer {
     });
   }
 
-  // Функция валидации полей формы. 
+  // Функция валидации полей
   // 1. Если поля (fields) указаны, валидация будет происходить только для указанных полей
   // 2. Если аргумент fields не указан, - валидация будет происходить по всем полям формы.
   validate(fields?: Array<keyof IBuyer>): BuyerValidationErrors {
@@ -105,7 +106,7 @@ export class Buyer {
 
     const _validateField = (key: keyof IBuyer, value: string, errors: BuyerValidationErrors) => {
       const validatorKey = this._validators.has(key) ? key : 'default';
-      return this._validators.get(validatorKey)(value);
+      return this._validators.get(validatorKey)!(value);
     };
 
     const keysToValidate = fields ?? Object.keys(this) as Array<keyof IBuyer>;

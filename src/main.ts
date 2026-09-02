@@ -114,6 +114,7 @@ import { OrderResultSuccess } from './components/view/OrderResultSuccess';
 // console.log('Получить все товары через API...');
 
 
+
 // // Получить товары с сервера
 // (async () => {
 //   let requestProducts: IProductListResponse;
@@ -173,6 +174,7 @@ import { OrderResultSuccess } from './components/view/OrderResultSuccess';
 
 
 // APP MAIN CODE
+
 const api = new Api(API_URL);
 const apiService = new ApiService(api);
 
@@ -216,10 +218,6 @@ const formOrder = new FormOrder(formOrderContent, eventBroker, {
   submit: (e: Event) => {
     e.preventDefault();
     eventBroker.emit('order:submit');
-  },
-  click: () => {
-    // В данной форме обработку клика можно сделать таким образом, спрятав отправку события в логику формы
-    return true;
   }
 });
 const formContacts = new FormContacts(formContactsContent, eventBroker, {
@@ -247,8 +245,6 @@ eventBroker.on('cart:add', () => {
   const product = catalog.getSelectedProduct();
   
   if(!product) return;
-
-  console.log('cart:add... do action');
 
   // Удалить товар по нажатию. Иначе добавить товар по нажатию.
   // Если в корзине уже есть товар, то пользователь видит кнопку удаления. 
@@ -292,7 +288,6 @@ eventBroker.on('cart:data-changed', () => {
 
 // Обработчик события удаления товара из корзины
 eventBroker.on<Pick<IProduct, 'id'>>('cart:remove', ({ id }) => {
-  console.log(`remove product[id:${id}] from cart`);
   cart.removeItem(id);
 });
 
@@ -302,15 +297,16 @@ eventBroker.on<Pick<IProduct, 'id'>>('cart:remove', ({ id }) => {
 eventBroker.on('cart:show', () => {
   modalView.render({content: cartView.render()});
   modalView.open();
-});
+});  
 
 
-eventBroker.on<IFormOrder>('cart:submit', (/*data?: IFormOrder*/) => {
+eventBroker.on<IFormOrder>('cart:submit', () => {
     modalView.close();
     
     // Предположим, мы загрузили где-то данные модели buyer из localStorage, из кэша.
     // Побережём мозг нетренированного пользователя, чтобы он не заморачивался с данными, и быстрее купил:)
-    formOrder.render({...buyer});
+    const { payment, address } = buyer.getData();
+    formOrder.render({ payment, address });
 
     modalView.render({content: formOrder.render({errors: []})});
 
@@ -326,7 +322,6 @@ eventBroker.on<IFormOrder>('cart:submit', (/*data?: IFormOrder*/) => {
 
 
 eventBroker.on('formData:changed', (data: Partial<IBuyer>) => {
-  console.log('formData:changed', data);
   buyer.setData(data);
 });
 
@@ -361,7 +356,20 @@ function getErrorsText(errors: BuyerValidationErrors) {
 // Обновить состояние формы: отрисовать ошибки, и обновить состояние кнопки действия
 function updateFormState(form: Form<IFormOrder | IFormContacts>, errors: string[]) {
   const buyerData = buyer.getData();
-  form.render({...buyerData});
+
+  // Определяем, какая это форма, и берём только нужные поля
+  let dataToRender: Partial<IFormOrder> | Partial<IFormContacts>;
+
+    if (form instanceof FormOrder) {
+    const { payment, address } = buyerData;
+    dataToRender = { payment, address };
+  } else {
+    // Предполагаем, что вторая форма — FormContacts
+    const { phone, email } = buyerData;
+    dataToRender = { phone, email };
+  }
+
+  form.render(dataToRender);
   form.render({errors});
   form.enableActionButton(!errors.length);
 }
@@ -370,21 +378,21 @@ function updateFormState(form: Form<IFormOrder | IFormContacts>, errors: string[
 // Обработчик события изменения состава каталога
 // Обновить представление каталога в соответствии с актуальными данными
 eventBroker.on('catalog:data-changed', (e) => {
-  console.log('catalog:data-changed');
   const productCards = catalog.getProductList().map(product => {
     const productCardCatalogContent = cloneTemplate(productCardCatalogTemplate);
 
     // Карточка каталога, и обработчик(и) событий карточки
     const productCard = new ProductCardCatalog(productCardCatalogContent, {
       click: (e) => {
-        console.log('ProductCardCatalog: catalog:item-click');
         eventBroker.emit('catalog:item-click', product);
       }
     });
     
+    // Прописать правильную базовую часть пути к картинке товара
     product.image = `${CDN_URL}${product.image}`;
 
-    return productCard.render({...product});
+    const { title, price, category, image } = product;
+    return productCard.render({ title, price, category, image });
   });
 
   catalogGalleryView.items = productCards;
@@ -394,14 +402,12 @@ eventBroker.on('catalog:data-changed', (e) => {
 
 // Обработчик события клика на карточку товара в каталоге
 eventBroker.on<IProduct>('catalog:item-click', (product: IProduct) => {
-  console.log('catalog:item-click');
   catalog.setSelectedProduct(product.id);
 });
 
 
 // Обработчик события выбора товара в каталоге
 eventBroker.on<IProduct>('catalog:select', () => {
-  console.log('catalog:select');
   renderProductCardFullView();
 });
 
@@ -454,14 +460,17 @@ eventBroker.on('contacts:submit', () => {
     (async () => {
       try {
         const orderResponse = await apiService.createOrder(order);
-        console.log('Ответ от API получен:', orderResponse);
+
         eventBroker.emit<IOrderResponse>('order:success', {
           id: orderResponse.id,
           total: orderResponse.total
         });
+
         cart.removeAll();
+        buyer.clearAll();
+
       } catch(error) {
-        console.log('Ошибка: ', error);
+        console.error('Ошибка: ', error);
       }
     })();
 });

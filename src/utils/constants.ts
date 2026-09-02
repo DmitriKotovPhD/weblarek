@@ -16,6 +16,13 @@ export const categoryMap = {
   'другое': 'card__category_other',
 };
 
+export const BuyerValidationMessages = {
+    payment: 'Выберите способ оплаты',
+    address: 'Укажите адрес',
+    phone: 'Укажите телефон',
+    email: 'Укажите email',
+};
+
 export const settings = {
 
 };

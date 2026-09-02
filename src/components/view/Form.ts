@@ -23,18 +23,17 @@ export abstract class Form<T> extends Component<T> {
 
     // Обработчик события отправки формы
     if(eventHandlers?.submit) {
-      // this._actionButton.addEventListener('click', eventHandlers.submit);
       this.container.addEventListener('submit', (e: Event) => { if(eventHandlers?.submit) eventHandlers.submit(e) });
     }
 
     // Обработка события input для всех полей input
     // единым обработчиком, прицепленным на контейнер
-    this.container.addEventListener('input', (e: InputEvent) => {
+    this.container.addEventListener('input', (e: Event) => {
       const target = e.target as HTMLInputElement;
 
       if(!(target instanceof HTMLInputElement) ||
          !('name' in target)) {
-        return false;
+        return;
       }
 
       this.handleInput(target.name.toString(), e);
@@ -42,7 +41,7 @@ export abstract class Form<T> extends Component<T> {
   }
 
   // Прокси обработки события input 
-  handleInput(name: string, e: InputEvent): void {
+  handleInput(name: string, e: Event): void {
     if(this._subscribersInput.has(name)) {
       // Обработчик события для конкретного элемента, на котором событие произошло
       const handler = this._subscribersInput.get(name)!;
@@ -50,6 +49,9 @@ export abstract class Form<T> extends Component<T> {
     }
   }
 
+  // Подписка слушателя на событие input поля input
+  // ВНИМАНИЕ: на одно поле только один слушатель. 
+  // ВАЖНО: в форме не может быть двух полей с одинаковыми именами
   subscribeInputListener(input: HTMLInputElement, handler: Function) {
     const name = input?.name.toString();
     if(name) {

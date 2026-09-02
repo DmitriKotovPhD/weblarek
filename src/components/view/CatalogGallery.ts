@@ -10,7 +10,7 @@ export interface ICatalogGallery {
 export class CatalogGallery extends Component<ICatalogGallery> {
   // protected _catalog: HTMLElement;
   
-  constructor(container: HTMLElement, protected eventBroker: IEvents) {
+  constructor(container: HTMLElement, protected eventBroker?: IEvents) {
     super(container);
 
     // this._catalog = ensureElement<HTMLElement>('.gallery', this.container);

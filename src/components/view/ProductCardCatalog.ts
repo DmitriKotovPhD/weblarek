@@ -21,7 +21,6 @@ export class ProductCardCatalog<T extends IProductCardCatalog> extends ProductCa
     // и расположить его в родительском классе ProductCard
     // - в классах-наследниках, декорировать, добавлять элементы в список обработки
     // 
-    // Но пока пусть будет так.
     if(eventHandlers?.click) {
       this.container.addEventListener('click', eventHandlers.click);
     }

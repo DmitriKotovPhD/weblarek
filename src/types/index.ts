@@ -30,21 +30,16 @@ export interface IProduct {
     price: number | null;
 }
 
+
 export interface IBuyer {
     payment?: TPayment;
-    address?: string;
-    phone?: string;
     email?: string;
+    phone?: string;
+    address?: string;
 }
 
 export type BuyerValidationErrors = Partial<Record<keyof IBuyer, string>>;
 
-export const BuyerValidationMessages = {
-    payment: 'Выберите способ оплаты',
-    address: 'Укажите адрес',
-    phone: 'Укажите телефон',
-    email: 'Укажите email',
-};
 
 export interface IProductListResponse {
     total: number;
@@ -63,18 +58,16 @@ export interface IOrderResponse {
     error?: string;
 }
 
+// Интерфейс событий с карточкой товара
 export interface IProductEvents {
-    click?: (e: MouseEvent) => void;
-    actionButtonClick?: () => void;       // add to cart
-    removeItem?: () => void;    // remove item from cart
+    click?: (e: MouseEvent) => void;    // событие клика (по контейнеру, либо по элементу)
+    actionButtonClick?: () => void;     // клик по кнопке действия. Выведено в отдельную категорию события для удобства.
+    removeItem?: () => void;            // удалить товар из  корзины
 }
 
-export interface ICheckoutEvents {
-    checkout?: () => void;
-}
-
+// Интерфейс событий с формами
 export interface IUIEvents {
-    submit?: (e: Event) => void;
-    input?: () => void;
-    click?: () => void;
+    submit?: (e: Event) => void;        // событие отправки формы
+    input?: () => void;                 // событие input для интерактивной отработки событий формы
+    click?: () => void;                 // событие клика (по контейнеру, либо по элементу)
 }

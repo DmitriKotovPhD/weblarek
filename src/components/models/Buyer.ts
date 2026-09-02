@@ -11,7 +11,7 @@ export class Buyer {
   private _validators = new Map<string, Function>();
 
   constructor(protected eventBroker: IEvents) {
-    this.clearAll();
+    this.initFields();
     this.initValidators();
   }
 
@@ -30,11 +30,17 @@ export class Buyer {
     };
   }
 
-  clearAll(): void {
+  // Очистить все поля, без вызова события
+  private initFields(): void {
     this.payment = '';
     this.address = '';
     this.phone = '';
     this.email = '';
+  }
+
+  clearAll(): void {
+    this.initFields();
+    this.eventBroker.emit('buyerData:changed', Object.keys(this));
   }
 
   initValidators(): void {

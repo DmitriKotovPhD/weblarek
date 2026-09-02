@@ -4,6 +4,8 @@ import { ensureElement } from "@/utils/utils";
 
 export type IProductCardFull = Omit<IProduct, 'id'>;
 
+// Согласно логике данного проекта, логично сделать наследование от карточки каталога
+// При необходимости, обработчики событий можно как свести воедино, так и развести в отдельную логику, - это удобно.
 export class ProductCardFull extends ProductCardCatalog<IProductCardFull> {
   protected _description: HTMLElement;
   protected _actionButton: HTMLButtonElement;

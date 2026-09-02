@@ -335,6 +335,7 @@ eventBroker.on('formData:changed', (data: Partial<IBuyer>) => {
 
 
 // Как только данные изменились, валидировать их и отобразить результат в интерфейсе
+// TODO: использовать changedKeys
 eventBroker.on<Array<keyof IBuyer>>('buyerData:changed', (changedKeys) => {
 
   // Валидация модели данных и вывод сообщений об ошибках
@@ -434,7 +435,8 @@ const renderProductCardFullView = () => {
 
   if(!product) return;
 
-  productCardFullView.render({...product});
+  const { title, description, image, category, price } = product;
+  productCardFullView.render({ title, description, image, category, price });
   
   updateActionButton(productCardFullView, product, cart);
 
@@ -460,15 +462,14 @@ eventBroker.on('contacts:submit', () => {
     (async () => {
       try {
         const orderResponse = await apiService.createOrder(order);
+        
+        cart.removeAll();
+        buyer.clearAll();
 
         eventBroker.emit<IOrderResponse>('order:success', {
           id: orderResponse.id,
           total: orderResponse.total
         });
-
-        cart.removeAll();
-        buyer.clearAll();
-
       } catch(error) {
         console.error('Ошибка: ', error);
       }

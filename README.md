@@ -1,3 +1,7 @@
+Ссылка на GitHub:
+https://github.com/DmitriKotovPhD/weblarek.git
+
+
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Vite
@@ -53,6 +57,8 @@ Presenter - презентер содержит основную логику п
 
 Взаимодействие между классами обеспечивается использованием событийно-ориентированного подхода. Модели и Представления генерируют события при изменении данных или взаимодействии пользователя с приложением, а Презентер обрабатывает эти события используя методы как Моделей, так и Представлений.
 
+<br/>
+
 ### Базовый код
 
 #### Класс Component
@@ -67,15 +73,15 @@ Presenter - презентер содержит основную логику п
 
 Методы класса:  
 `render(data?: Partial<T>): HTMLElement` - Главный метод класса. Он принимает данные, которые необходимо отобразить в интерфейсе, записывает эти данные в поля класса и возвращает ссылку на DOM-элемент. Предполагается, что в классах, которые будут наследоваться от `Component` будут реализованы сеттеры для полей с данными, которые будут вызываться в момент вызова `render` и записывать данные в необходимые DOM элементы.  
-`setImage(element: HTMLImageElement, src: string, alt?: string): void` - утилитарный метод для модификации DOM-элементов `<img>`
-
+`setImage(element: HTMLImageElement, src: string, alt?: string): void` - утилитарный метод для модификации DOM-элементов `<img>`  
+<br/>
 
 
 #### Класс Api
 Содержит в себе базовую логику отправки запросов.
 
 Конструктор:  
-`constructor(baseUrl: string, options: RequestInit = {})` - В конструктор передается базовый адрес сервера и опциональный объект с заголовками запросов.
+`constructor(baseUrl: string, options: RequestInit = {})` - в конструктор передается базовый адрес сервера и опциональный объект с заголовками запросов.
 
 Поля класса:  
 `baseUrl: string` - базовый адрес сервера  
@@ -84,8 +90,8 @@ Presenter - презентер содержит основную логику п
 Методы:  
 `get(uri: string): Promise<object>` - выполняет GET запрос на переданный в параметрах ендпоинт и возвращает промис с объектом, которым ответил сервер  
 `post(uri: string, data: object, method: ApiPostMethods = 'POST'): Promise<object>` - принимает объект с данными, которые будут переданы в JSON в теле запроса, и отправляет эти данные на ендпоинт переданный как параметр при вызове метода. По умолчанию выполняется `POST` запрос, но метод запроса может быть переопределен заданием третьего параметра при вызове.  
-`handleResponse(response: Response): Promise<object>` - защищенный метод проверяющий ответ сервера на корректность и возвращающий объект с данными полученный от сервера или отклоненный промис, в случае некорректных данных.
-
+`handleResponse(response: Response): Promise<object>` - защищенный метод проверяющий ответ сервера на корректность и возвращающий объект с данными полученный от сервера или отклоненный промис, в случае некорректных данных.  
+<br/>
 
 #### Класс EventEmitter
 Брокер событий реализует паттерн "Наблюдатель", позволяющий отправлять события и подписываться на события, происходящие в системе. Класс используется для связи слоя данных и представления.
@@ -113,7 +119,7 @@ Presenter - презентер содержит основную логику п
 `id: string` уникальный идентификатор товара.  
 `title: string` наименование товара. Используется в карточке товара.  
 `description: string` подробное описание товара. Отображается в карточке товара.  
-`image: string` uri картинки товара. Используется для отображения картинки товара в карточке товара и в каталоге. 
+`image: string` uri картинки товара. Используется для отображения картинки товара в карточке товара и в каталоге.   
 `category: string` наименование категории товара.  
 `price: number | null` цена товара. Может отсутствовать.  
 <br/>
@@ -171,21 +177,21 @@ Presenter - презентер содержит основную логику п
 #### Интерфейс IProductEvents
 Формат описания событий с карточками товара
  
-Поля интерфейса:
-    `click?: (e: MouseEvent) => void`  событие клика
-    `actionButtonClick?: () => void`   клик по кнопке действия. Выведено в отдельную категорию события для удобства.
-    `removeItem?: () => void`          удалить товар из  корзины
+Поля интерфейса:  
+`click?: (e: MouseEvent) => void`  событие клика  
+`actionButtonClick?: () => void`   клик по кнопке действия. Выведено в отдельную категорию события для удобства.  
+`removeItem?: () => void`          удалить товар из  корзины  
 <br/>
 
 #### Интерфейс IUIEvents
 Формат описания событий с формами
 
-Поля интерфейса:
-  `submit?: (e: Event) => void`        // событие отправки формы
-  `input?: () => void`                 // событие input для интерактивной отработки событий формы
-  `click?: () => void`                 // событие клика (по контейнеру, либо по элементу)
+Поля интерфейса:  
+`submit?: (e: Event) => void`        // событие отправки формы  
+`input?: () => void`                 // событие input для интерактивной   отработки событий формы  
+`click?: () => void`                 // событие клика (по контейнеру, либо по элементу)    
 <br/>
-
+<br/>  
 
 
 
@@ -212,7 +218,7 @@ Presenter - презентер содержит основную логику п
 `setSelectedProduct(productId: string): void` сохранить выбранный товар 
 <br/>
 
-События: 
+События:  
 `catalog:data-changed` событие, срабатывающее по факту изменения в составе списка товаров в каталоге. После возникновения данного события, следует выполнить обновление представления графического интерфейса с использованием актуальных данных productList.  
 `catalog:select` событие, срабатывающее по факту назначения товара с указанным id в качестве текущего выбранного товара.
 
@@ -239,8 +245,8 @@ Presenter - презентер содержит основную логику п
 `has(productId: string): boolean` проверить наличие товара    
 <br/>
 
-События: 
-`cart:data-changed` данное событие означает, что данные (напр., состав товаров) в модели корзины изменился. После этого события необходимо внести соответствующие изменения в графический интерфейс для приведения в соответствия с актуальными данными в модели.
+События:  
+`cart:data-changed` данное событие означает, что данные (напр., состав товаров) в модели корзины изменился. После этого события необходимо внести соответствующие изменения в графический интерфейс для приведения в соответствия с актуальными данными в модели.  
 
 <br/>
 <br/>
@@ -266,9 +272,9 @@ Presenter - презентер содержит основную логику п
 Методы класса:  
 `setData(buyer: Partial<IBuyer>): void` сохранить указанные данные покупателя. Предоставляет возможность сохранить как всю модель, так и частичный набор полей модели.  
 `getData(): IBuyer` получить все данные покупателя  
-`clearAll(): void` инициализировать все поля и вызвать событие изменения данных покупателя
-`validate(fields?: Array<keyof IBuyer>): BuyerValidationErrors {}` валидировать данные покупателя. Можно валидировать только нужные поля fields. В отсутствии аргумента, функция вернёт результат валидации всех полей модели.
-`initFields(): void`  инициализировать поля, без вызова события изменения данных
+`clearAll(): void` инициализировать все поля и вызвать событие изменения данных покупателя  
+`validate(fields?: Array<keyof IBuyer>): BuyerValidationErrors {}`  валидировать данные покупателя. Можно валидировать только нужные поля fields. В отсутствии аргумента, функция вернёт результат валидации всех полей модели.  
+`initFields(): void`  инициализировать поля, без вызова события изменения данных  
 `initValidators(): void` вспомогательная функция для инициализации валидаторов полей модели  
 <br/>
 <br/>
@@ -282,7 +288,7 @@ Presenter - презентер содержит основную логику п
 Это прослойка для взаимодействия с внешним источником данных (сервер) посредством API.
 Через эту прослойку предусмотрены: отправка данных на сервер, получение данных с сервера (массив товаров). Запросы делегируются экземпляру класса API.
 
-Конструктор класса:
+Конструктор класса:  
 `constructor(private api: IApi)`
 
 Поля класса:  
@@ -313,9 +319,9 @@ Presenter - презентер содержит основную логику п
 Конструктор класса:  
 `constructor(container: HTMLElement, protected eventBroker: IEvents)`  
 
-Поля класса: 
-`protected _basketButton: HTMLButtonElement`  
-`protected _counterElement: HTMLElement`
+Поля класса:  
+`protected _basketButton: HTMLButtonElement`  кнопка корзины  
+`protected _counterElement: HTMLElement` счётчик в шапке  
 
 Методы класса:  
 `set counter(value: number)` установить значение счётчика товаров в корзине
@@ -333,7 +339,7 @@ Presenter - презентер содержит основную логику п
 Контейнер для дочерней разметки наследуется из Component.
 
 
-Конструктор класса: 
+Конструктор класса:  
 `constructor(container: HTMLElement, protected eventBroker?: IEvents)`
 
 Поля класса: 
@@ -363,16 +369,16 @@ Presenter - презентер содержит основную логику п
 
 Конструктор класса:  
 `constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента в DOM,
-и ссылка на инстанс брокера событий.
+и ссылка на инстанс брокера событий.  
 
 Поля класса:   
-`private _content: HTMLElement`
-`private _closeButton: HTMLButtonElement`
+`private _content: HTMLElement`  содержимое
+`private _closeButton: HTMLButtonElement`  кнопка закрытия
 
 Методы класса:  
-`set content(value: HTMLElement)`
-`open(): void`
-`close(): void`
+`set content(value: HTMLElement)`  установить контент
+`open(): void`  открыть 
+`close(): void`  закрыть
 
 
 
@@ -385,46 +391,46 @@ Presenter - презентер содержит основную логику п
 Отвечает за отображение корзины с товарами. Наследует от Component. 
 Использует шаблон с id=`basket`.
 
-Конструктор класса:
+Конструктор класса:  
 `constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента в DOM,
-и ссылка на инстанс брокера событий.
+и ссылка на инстанс брокера событий.  
 
-Поля класса:
-`protected itemsContainer: HTMLElement` корневой элемент (узел DOM) списка товаров в корзине
-`protected subtotal: HTMLElelement` элемент с ценой подытога стоимости корзины
-`protected checkoutButton: HTMLButtonElement` кнопка перехода к оформлению покупки
+Поля класса:  
+`protected itemsContainer: HTMLElement` корневой элемент (узел DOM) списка товаров в корзине  
+`protected subtotal: HTMLElelement` элемент с ценой подытога стоимости корзины  
+`protected checkoutButton: HTMLButtonElement` кнопка перехода к оформлению покупки  
 
 События:  
-`cart:submit` отправка формы корзины
+`cart:submit` отправка формы корзины  
 
-Методы класса:
-`set items(value: HTMLElement[])` установить список товаров в корзине
-`set subtotalContent(value: number)` установить значение строки подытога оценки стоимости корзины
-`set checkoutEnabled(enabled: boolean)` вкл/выкл кнопки оформления заказа
-`addItem(value: HTMLElement): void` добавить товар
+Методы класса:  
+`set items(value: HTMLElement[])` установить список товаров в корзине  
+`set subtotalContent(value: number)` установить значение строки подытога оценки стоимости корзины  
+`set checkoutEnabled(enabled: boolean)` вкл/выкл кнопки оформления заказа  
+`addItem(value: HTMLElement): void` добавить товар  
 
 
 
 #### Интерфейс IProductCard
 Берёт из интерфейса описания товара `IProduct` только общие для всех товаров поля:
-`title`, `price`.
+`title`, `price`.  
 
 
-#### Класс ProductCard
+#### Класс ProductCard  
 Базовый абстрактный класс отображения карточки товара. Наследует от Component.
 
-Конструктор класса:
+Конструктор класса:  
 `constructor(container: HTMLElement)` в конструктор передаётся корневой элемент компонента в DOM, 
-и, опционально, объект для инициализации экземпляра класса.
+и, опционально, объект для инициализации экземпляра класса.  
 
-Поля класса:
-`container: HTMLElement` корневой элемент компонента (карточки) в DOM. Наследует от Component.
-`protected title: HTMLElement` элемент заголовка
-`protected price: HTMLElement` элемент с ценой товара
+Поля класса:  
+`container: HTMLElement` корневой элемент компонента (карточки) в DOM. Наследует от Component.  
+`protected title: HTMLElement` элемент заголовка  
+`protected price: HTMLElement` элемент с ценой товара  
 
-Методы класса:
-`set title(value: string)`  установить текст заголовка товара.
-`set price(value: number | null)` установить значение поля цены.
+Методы класса:  
+`set title(value: string)`  установить текст заголовка товара.  
+`set price(value: number | null)` установить значение поля цены.  
 
 
 <br/>
@@ -432,36 +438,36 @@ Presenter - презентер содержит основную логику п
 
 #### Интерфейс IProductCardCatalog
 Берёт из интерфейса описания товара `IProduct` только нужные поля, расширяя IProductCard:  
-`IProductCard &  Pick<IProduct, 'category' | 'image'>`
+`IProductCard &  Pick<IProduct, 'category' | 'image'>`  
 
 
-#### Класс ProductCardCatalog
+#### Класс ProductCardCatalog  
 Класс для отображения карточки товара в каталоге. Наследует от ProductCard.
 Это вариант представления карточки товара с картинкой.
-Использует шаблон с id=`card-catalog`.
+Использует шаблон с id=`card-catalog`.  
 
-Конструктор класса:
+Конструктор класса:  
 `constructor(container: HTMLElement)` в конструктор передаётся корневой элемент компонента в DOM, 
-и, опционально, объект для инициализации экземпляра класса.
+и, опционально, объект для инициализации экземпляра класса.  
 
-Поля класса:
-`container: HTMLElement` корневой элемент компонента (карточки) в DOM.  Наследует от Component.
-`protected _category: HTMLElement` элемент с категорией товара.
-`protected _image: HTMLImageElement` элемент с картинкой товара.
+Поля класса:  
+`container: HTMLElement` корневой элемент компонента (карточки) в DOM.  Наследует от Component.   
+`protected _category: HTMLElement` элемент с категорией товара.  
+`protected _image: HTMLImageElement` элемент с картинкой товара.  
 
-Методы класса:  
-`set category(value: string)` установить текст наименования категории товара
+Методы класса:    
+`set category(value: string)` установить текст наименования категории товара  
 `set image(value: string)` установить изображение и альтернативный текст изображения  
-`updateCardBackground(category: string)`  установить фон карточки товара  
+`updateCardBackground(category: string)`  установить фон карточки товара    
 
 
 <br/>
 
 
-#### Интерфейс IProductCardFull
+#### Интерфейс IProductCardFull  
 Берёт из интерфейса описания товара `IProduct` все поля, кроме тех, что не нужно отображать во фронтэнде:
 `Omit<IProduct, 'id'>`
-Список полей IProductCardFull:
+Список полей IProductCardFull:  
 - `title`
 - `description`
 - `image`
@@ -469,29 +475,29 @@ Presenter - презентер содержит основную логику п
 - `price`
 
 
-#### Класс ProductCardFull
+#### Класс ProductCardFull  
 Класс карточки товара для отображения полной информации о товаре. Наследует от ProductCardCatalog.
 Это вариант отображения карточки товара в полном варианте исполнения: с картинкой, и прочими полями.
 Использует шаблон с id=`card-pre`.
 
 
-Конструктор класса:
+Конструктор класса:  
 `constructor(container: HTMLElement)` в конструктор передаётся корневой элемент компонента в DOM, 
-и, опционально, объект для инициализации экземпляра класса.
+и, опционально, объект для инициализации экземпляра класса.  
 
-Поля класса:
-`protected _description: HTMLElement` элемент с подробным текстовым описанием товара.
-`protected _actionButton: HTMLButtonElement` элемент кнопки добавления/удаления товара в корзину.  
+Поля класса:  
+`protected _description: HTMLElement` элемент с подробным текстовым описанием товара.  
+`protected _actionButton: HTMLButtonElement` элемент кнопки добавления/удаления товара в корзину.    
 
-Методы класса:
-`set description(value: string)` установить текст подробного описания товара.
-`set actionButtonText(value: string)` установить текст кнопки действия  
-`set actionButtonEnabled(enabled: boolean)` включить/выключить способность кнопки реагировать на действия пользователя
+Методы класса:  
+`set description(value: string)` установить текст подробного описания товара.  
+`set actionButtonText(value: string)` установить текст кнопки действия    
+`set actionButtonEnabled(enabled: boolean)` включить/выключить способность кнопки реагировать на действия пользователя  
 <br/>
 
 
 
-#### Интерфейс IProductCardCart
+#### Интерфейс IProductCardCart  
 Берёт из поля базового интерфейса `IProductCard`, 
 плюс поле `index`, необходимое для указания номера товара в корзине:
 `IProductCard & { index: number }`  
@@ -500,22 +506,22 @@ Presenter - презентер содержит основную логику п
 #### Класс ProductCardCart
 Класс для отображения карточки товара в корзине. Наследует от ProductCart.
 Минималистичный вариант отображения карточки товара, без картинки.
-Использует шаблон с id=`card-basket`.
+Использует шаблон с id=`card-basket`.  
 
-Конструктор класса:
+Конструктор класса:  
 `constructor(container: HTMLElement)` в конструктор передаётся корневой элемент компонента в DOM, 
-и, опционально, объект для инициализации экземпляра класса.
+и, опционально, объект для инициализации экземпляра класса.  
 
-Поля класса:
-`protected _index: HTMLElement` порядковый номер товара в списке корзины.
-`protected _buttonDelete: HTMLButtonElement` кнопка удаления товара из корзины.
+Поля класса:  
+`protected _index: HTMLElement` порядковый номер товара в списке корзины.  
+`protected _buttonDelete: HTMLButtonElement` кнопка удаления товара из корзины.  
 
-Методы класса:
-`set index(value: number)` установить значение порядкового номера товара в списке корзины.
+Методы класса:  
+`set index(value: number)` установить значение порядкового номера товара в списке корзины.   
 
 
 
-#### Класс Form
+#### Класс Form  
 Базовый абстрактный класс формы. Наследует от Component.
 Отвечает за базовый функционал работы с формой, например: 
 - представление полей формы
@@ -526,13 +532,13 @@ Presenter - презентер содержит основную логику п
 
 Конструктор класса:
 `constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента (формы) в DOM,
-и ссылка на инстанс брокера событий.
+и ссылка на инстанс брокера событий.  
 
-Поля класса:
-`protected eventBroker: IEvents`
-`protected _fields: HTMLInputElement[]`
-`protected _actionButton: HTMLButtonElement`
-`protected _errors: HTMLElement`  
+Поля класса:  
+`protected eventBroker: IEvents`  брокер событий
+`protected _fields: HTMLInputElement[]`  поля формы
+`protected _actionButton: HTMLButtonElement`  кнопка действия
+`protected _errors: HTMLElement`    область для текста ошибок
 
 `protected _subscribersInput: Map<string, Function>`  карта обработчиков событий, используется для подписки слушателей на единый прослушиватель события input на контейнере.
 Это пример формата реализации прослушивателей с одним обработчиком на контейнере  
@@ -541,22 +547,22 @@ Presenter - презентер содержит основную логику п
 Данный подход реализован потому, что я так хочу.
 
 
-Методы класса:
-`set errors(errors: string[])` установить тексты ошибок в UI
-`enableActionButton(enable: boolean): void`
+Методы класса:  
+`set errors(errors: string[])` установить тексты ошибок в UI  
+`enableActionButton(enable: boolean): void`  вкл/выкл кнопки дйествия  
 `handleInput(name: string, e: InputEvent): void` проксии-метод для вызова обработчика события input для конкретного поля.  
 `subscribeInputListener(input: HTMLInputElement, handler: Function)` подписать обработчик события ввода конкретного поля на исполнение в функцию-слушатель событий input на контейнере.  
 ВНИМАНИЕ: на одно поле - один слушатель. Большего не надо. В случае необходимости, возможна гибкая реализация с несколькими слушателями.  
 
-`enableActionButton(enable: boolean): void` включить/выключить способность кнопки реагировать на действия пользователя      
+`enableActionButton(enable: boolean): void` включить/выключить способность кнопки реагировать на действия пользователя       
 <br/>
 <br/>
 
 #### Интерфейс IFormOrder
 Интерфейс включает необходимые поля из IBuyer, плюс поле `errors` для установки текстов ошибок в UI  
-`payment: TPayment`
-`address: string`
-`errors: string[]`
+`payment: TPayment`  способ оплаты  
+`address: string`  адрес  
+`errors: string[]`  массив ошибок валидации  
 
 #### Класс FormOrder
 Форма выбора способа оплаты. Наследует от Form. Использует шаблон с id=`order`.
@@ -564,32 +570,32 @@ Presenter - презентер содержит основную логику п
 - выбора способа оплаты
 - указания адреса доставки
 
-Конструктор класса:
+Конструктор класса:  
 `constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента (формы) в DOM,
-и ссылка на инстанс брокера событий.
+и ссылка на инстанс брокера событий.  
 
-Поля класса:
-`protected eventBroker: IEvents`
-`protected _paymentMethodSelectors: HTMLButtonElement[]`
-`protected _address: HTMLInputElement`  
+Поля класса:  
+`protected eventBroker: IEvents`   брокер событий
+`protected _paymentMethodSelectors: HTMLButtonElement[]`  переключатели/кнопки методов оплаты
+`protected _address: HTMLInputElement` адрес  
 
-События: 
-`formData:changed` событие означает: данные формы изменились  
+События:   
+`formData:changed` событие означает: данные формы изменились    
 
 
-Методы класса:
-`set payment(value: TPayment)` установить значение в UI: выбранный способ оплаты 
-`set address(value: string)`  установить значение в UI: адрес  
+Методы класса:  
+`set payment(value: TPayment)` установить значение в UI: выбранный способ оплаты   
+`set address(value: string)`  установить значение в UI: адрес    
 
 
 <br/>  
 
 
-#### Интерфейс IFormContacts
-Интерфейс включает необходимые поля из IBuyer, плюс поле `errors` для установки текстов ошибок в UI
-`email: string`
-`phone: string`  
-`errors: string[]`  
+#### Интерфейс IFormContacts  
+Интерфейс включает необходимые поля из IBuyer, плюс поле `errors` для установки текстов ошибок в UI  
+`email: string`  email 
+`phone: string`    телефон
+`errors: string[]`    массив ошибок валидации 
 
 
 #### Класс FormContacts
@@ -603,14 +609,14 @@ Presenter - презентер содержит основную логику п
 `constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента (формы) в DOM,
 и ссылка на инстанс брокера событий.
 
-Поля класса:
-`protected eventBroker: IEvents`
-`protected _email: HTMLInputElement`
-`protected _phone: HTMLInputElement`
+Поля класса:   
+`protected eventBroker: IEvents`   брокер событий  
+`protected _email: HTMLInputElement`  email  
+`protected _phone: HTMLInputElement`  телефон  
 
-Методы класса:
-`set email(value: string)`
-`set phone(value: string)`
+Методы класса:  
+`set email(value: string)` установить значение поля email  
+`set phone(value: string)` установить значение поля телефона  
 
 
 <br/>  
@@ -619,23 +625,23 @@ Presenter - презентер содержит основную логику п
 `total: number`  сумма заказа  
 
 
-#### Класс OrderResultSuccess
+#### Класс OrderResultSuccess  
 Компонент с результатом заказа. Используется для отображения успешного завершения заказа.
 Наследует от Component.
-Использует шаблон с id=`success`.
+Использует шаблон с id=`success`.  
 
 
-Конструктор класса:
+Конструктор класса:  
 `constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента (формы) в DOM,
-и ссылка на инстанс брокера событий.
+и ссылка на инстанс брокера событий.  
 
-Поля класса:
-`private _title: HTMLElement`
-`private _description: HTMLElement`
-`private _closeButton: HTMLButtonElement`
+Поля класса:  
+`private _title: HTMLElement`  заголовок (задел на будущее)  
+`private _description: HTMLElement`  основной текст сообщения  
+`private _closeButton: HTMLButtonElement`  кнопка закрытия  
 
-Методы класса:
-`set total(value: number)`  установить основной текст сообщения в окне, с указанием суммы конкретного заказа.  
+Методы класса:  
+`set total(value: number)`  установить основной текст сообщения в окне, с указанием суммы конкретного заказа.    
 
 <br/>  
 <br/>  

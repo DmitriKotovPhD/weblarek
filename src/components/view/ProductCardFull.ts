@@ -1,41 +1,40 @@
-import { IProduct, IProductEvents } from "@/types";
+import { IProduct } from "@/types";
 import { ProductCardCatalog } from "./ProductCardCatalog";
 import { ensureElement } from "@/utils/utils";
+import { IEvents } from "../base/Events";
 
-export type IProductCardFull = Omit<IProduct, 'id'>;
+export type IProductCardFull = Omit<IProduct, 'id'> & { actionButtonText: string, actionButtonEnabled: boolean };
 
 // Согласно логике данного проекта, логично сделать наследование от карточки каталога
 // При необходимости, обработчики событий можно как свести воедино, так и развести в отдельную логику, - это удобно.
 export class ProductCardFull extends ProductCardCatalog<IProductCardFull> {
-  protected _description: HTMLElement;
-  protected _actionButton: HTMLButtonElement;
+  protected descriptionElement: HTMLElement;
+  protected actionButton: HTMLButtonElement;
   
-  constructor(container: HTMLElement, eventHandlers?: IProductEvents) {
+  constructor(container: HTMLElement, protected eventBroker: IEvents) {
     super(container);
 
-    this._description = ensureElement<HTMLElement>('.card__text', this.container);
-    this._actionButton = ensureElement<HTMLButtonElement>('.card__button', this.container);
+    this.descriptionElement = ensureElement<HTMLElement>('.card__text', this.container);
+    this.actionButton = ensureElement<HTMLButtonElement>('.card__button', this.container);
 
     // Пусть у кнопки покупки будет свой отдельный обработчик
-    if(eventHandlers?.actionButtonClick) {
-      this._actionButton.addEventListener('click', eventHandlers.actionButtonClick);
-    }
+    this.actionButton.addEventListener('click', () => {
+      eventBroker.emit('cart:action');
+    });
   }
 
   // Установить текст поля описания товара
   set description(value: string) {
-    this._description.textContent = value;
+    this.descriptionElement.textContent = value;
   }
 
   // Установить текст кнопки действия на полной карточке товара
   set actionButtonText(value: string) {
-    if(!value) return;
-
-    this._actionButton.textContent = value;
+    this.actionButton.textContent = value;
   }
 
   // Вкл-выкл кнопки действия
   set actionButtonEnabled(enabled: boolean) {
-    this._actionButton.disabled = !enabled;
+    this.actionButton.disabled = !enabled;
   }
 }

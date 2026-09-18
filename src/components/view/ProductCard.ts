@@ -7,21 +7,21 @@ export interface IProductCard {
 }
 
 export abstract class ProductCard<T extends IProductCard> extends Component<T> {
-  protected _title: HTMLElement;
-  protected _price: HTMLElement;
+  protected titleElement: HTMLElement;
+  protected priceElement: HTMLElement;
   
   constructor(container: HTMLElement) {
     super(container);
 
-    this._title = ensureElement<HTMLElement>('.card__title', this.container);
-    this._price = ensureElement<HTMLElement>('.card__price', this.container);
+    this.titleElement = ensureElement<HTMLElement>('.card__title', this.container);
+    this.priceElement = ensureElement<HTMLElement>('.card__price', this.container);
   }
 
   set title(value: string) {
-    this._title.textContent = value;
+    this.titleElement.textContent = value;
   }
 
   set price(value: number | null) {
-    this._price.textContent = value === null ? 'Бесценно' : `${value} синапсов`;
+    this.priceElement.textContent = value === null ? 'Бесценно' : `${value} синапсов`;
   }
 }

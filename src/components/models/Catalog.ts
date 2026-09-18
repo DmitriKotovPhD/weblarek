@@ -24,12 +24,6 @@ export class Catalog {
     return this.productList.find(product => product.id === productId) ?? null;
   }
 
-  addProduct(product: IProduct): void {
-    this.productList.push(product);
-
-    this.eventBroker.emit('catalog:data-changed');
-  }
-
   getSelectedProduct(): IProduct | null {
     return this.selectedProduct;
   }

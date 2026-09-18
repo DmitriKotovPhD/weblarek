@@ -1,4 +1,4 @@
-import { TPayment, IBuyer, BuyerValidationErrors, isValidPayment } from "@/types";
+import { TPayment, IBuyer, BuyerValidationErrors, isValidPayment, BUYER_FIELDS } from "@/types";
 import { BuyerValidationMessages } from "@/utils/constants";
 import { IEvents } from "../base/Events";
 
@@ -8,17 +8,18 @@ export class Buyer {
   private phone: string = '';
   private address: string = '';
 
-  private _validators = new Map<string, Function>();
+  private validators = new Map<keyof IBuyer | 'default', (value: string) => boolean>();
 
   constructor(protected eventBroker: IEvents) {
-    this.initFields();
     this.initValidators();
   }
 
   setData(buyer: Partial<IBuyer>): void {
-    Object.assign(this, buyer);
-    const changedKeys = Object.keys(buyer) as Array<keyof this>;
-    this.eventBroker.emit('buyerData:changed', changedKeys);
+    BUYER_FIELDS.forEach((key) => {
+      if(buyer[key] !== undefined) this[key] = buyer[key];
+    });
+
+    this.eventBroker.emit('buyerData:changed');
   }
 
   getData(): IBuyer {
@@ -30,7 +31,7 @@ export class Buyer {
     };
   }
 
-  // Очистить все поля, без вызова события
+  // Инициализировать все поля, без вызова события
   private initFields(): void {
     this.payment = '';
     this.address = '';
@@ -40,67 +41,34 @@ export class Buyer {
 
   clearAll(): void {
     this.initFields();
-    this.eventBroker.emit('buyerData:changed', Object.keys(this));
+    this.eventBroker.emit('buyerData:changed');
   }
 
-  initValidators(): void {
-    this._validators.set('default', (value: string) => {
+  private initValidators(): void {
+    this.validators.set('default', (value: string): boolean => {
       return value !== '';
     });
 
     // Валидация payment
     // В поле payment, пустое значение '' - это тоже часть типа TPayment, 
     // оно означает отсутствие выбранного способа оплаты
-    this._validators.set('payment', (): Boolean => {
-      return this.payment.trim() !== '' && isValidPayment(this.payment.trim());
+    this.validators.set('payment', (value: string): boolean => {
+      return value.trim() !== '' && isValidPayment(value.trim());
     });
 
     // Валидация address
-    this._validators.set('address', () => {
-      return this.address.trim().length > 0;
+    this.validators.set('address', (value: string): boolean => {
+      return value.trim() !== '';
     });
 
     // Валидация phone
-    this._validators.set('phone', () => {
-      const pattern = /^(?:\+7|8)?[\s\-()]*\d{3}[\s\-()]*\d{3}[\s\-()]*\d{2}[\s\-()]*\d{2}$/;
-      return pattern.test(this.phone.trim());
+    this.validators.set('phone', (value: string): boolean => {
+      return value.trim() !== '';
     });
 
     // Валидация email
-    this._validators.set('email', () => {
-      const email = this.email.trim();
-
-      if(email.length > 254) {
-        return false;
-      }
-
-      const pattern = /^[\w.-]+@[\w.-]+\.[a-z]{2,}$/i;
-      if(!pattern.test(email)) {
-        return false;
-      }
-      
-      // Проверка на наличие двойных точек и двойных дефисов: это недопустимо
-      if(/[-\.]{2,}/.test(email)) {
-        return false;
-      }
-
-      const [local, domain] = email.split('@');
-
-      if(local.length > 64) {
-        return false;
-      }
-
-      if(local.startsWith('.') || local.endsWith('.') ||
-         local.startsWith('-') || local.endsWith('-')) {
-        return false;
-      }
-
-      if(domain.startsWith('.') || domain.endsWith('.') ||
-         domain.startsWith('-') || domain.endsWith('-')) {
-        return false;
-      }
-
-      return true;
+    this.validators.set('email', (value: string): boolean => {
+      return value.trim() !== '';
     });
   }
 
@@ -110,17 +78,17 @@ export class Buyer {
   validate(fields?: Array<keyof IBuyer>): BuyerValidationErrors {
     const errors: BuyerValidationErrors = {};
 
-    const _validateField = (key: keyof IBuyer, value: string, errors: BuyerValidationErrors) => {
-      const validatorKey = this._validators.has(key) ? key : 'default';
-      return this._validators.get(validatorKey)!(value);
+    const _validateField = (key: keyof IBuyer, value: string) => {
+      const validatorKey = this.validators.has(key) ? key : 'default';
+      return this.validators.get(validatorKey)!(value);
     };
 
-    const keysToValidate = fields ?? Object.keys(this) as Array<keyof IBuyer>;
+    const keysToValidate = fields ?? BUYER_FIELDS;
 
     for(const key of keysToValidate) {
       const value = this[key];
 
-      if(!_validateField(key, value, errors)) {
+      if(!_validateField(key, value)) {
         const errorKey = key as keyof BuyerValidationErrors;
         errors[errorKey] = BuyerValidationMessages[errorKey];
       }      

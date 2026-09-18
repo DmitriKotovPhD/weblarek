@@ -5,11 +5,12 @@ import { IEvents } from "../base/Events";
 export interface ICartView {
   items: HTMLElement[];
   subtotal: number;
+  checkoutEnabled: boolean;
 }
 
 export class CartView extends Component<ICartView> {
   protected itemsContainer: HTMLElement;
-  protected subtotal: HTMLElement;
+  protected subtotalElement: HTMLElement;
   protected checkoutButton: HTMLButtonElement;
 
 
@@ -17,10 +18,10 @@ export class CartView extends Component<ICartView> {
     super(container);
 
     this.itemsContainer = ensureElement<HTMLElement>('.basket__list', this.container);
-    this.subtotal = ensureElement<HTMLElement>('.modal__actions > .basket__price', this.container);
+    this.subtotalElement = ensureElement<HTMLElement>('.modal__actions > .basket__price', this.container);
     this.checkoutButton = ensureElement<HTMLButtonElement>('.modal__actions > .basket__button', this.container);
 
-    this.checkoutButton.addEventListener('click', (e: MouseEvent) => {
+    this.checkoutButton.addEventListener('click', () => {
       this.eventBroker.emit('cart:submit');
     });
   }
@@ -29,8 +30,8 @@ export class CartView extends Component<ICartView> {
     this.itemsContainer.replaceChildren(...value);
   }
 
-  set subtotalContent(value: number) {
-    this.subtotal.textContent = `${value} синапсов`;
+  set subtotal(value: number) {
+    this.subtotalElement.textContent = `${value} синапсов`;
   }
 
   set checkoutEnabled(enabled: boolean) {

@@ -7,15 +7,15 @@ export interface IModal {
 }
 
 export class Modal extends Component<IModal> {
-  private _content: HTMLElement;
-  private _closeButton: HTMLButtonElement;
+  private contentElement: HTMLElement;
+  private closeButton: HTMLButtonElement;
  
 
   constructor(container: HTMLElement, protected eventBroker: IEvents) {
     super(container);
 
-    this._content = ensureElement<HTMLElement>('.modal__content', this.container);
-    this._closeButton = ensureElement<HTMLButtonElement>('.modal__close', this.container);
+    this.contentElement = ensureElement<HTMLElement>('.modal__content', this.container);
+    this.closeButton = ensureElement<HTMLButtonElement>('.modal__close', this.container);
 
     // События
     this.container.addEventListener('click', (e: MouseEvent) => {
@@ -24,32 +24,25 @@ export class Modal extends Component<IModal> {
       if(!target) return;
 
       if(target === this.container ||
-         this._closeButton.contains(target)) {
+         this.closeButton.contains(target)) {
           e.stopPropagation();
           this.close();
       }
     });
   }
 
-    // Открыть модальное окно
+  // Открыть модальное окно
   open = (): void => {
-    if(this.isOpen) return;
     this.container.classList.add('modal_active');
-    this.eventBroker.emit('modal:open');
   };
 
   // Закрыть модальное окно
   close = (): void => {
-    if(!this.isOpen) return;
     this.container.classList.remove('modal_active');
-    this.eventBroker.emit('modal:close');
   };
 
+  // Установить дочерний контент модального окна
   set content(value: HTMLElement) {
-    this._content.replaceChildren(value);
-  }
-
-  get isOpen(): boolean {
-    return this.container.classList.contains('modal_active');
+    this.contentElement.replaceChildren(value);
   }
 }

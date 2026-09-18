@@ -7,21 +7,21 @@ export interface IHeader {
 }
 
 export class Header extends Component<IHeader> {
-  protected _basketButton: HTMLButtonElement;
-  protected _counterElement: HTMLElement;
+  protected basketButton: HTMLButtonElement;
+  protected counterElement: HTMLElement;
   
   constructor(container: HTMLElement, protected eventBroker: IEvents) {
     super(container);
 
-    this._basketButton = ensureElement<HTMLButtonElement>('.header__basket', this.container);
-    this._counterElement = ensureElement<HTMLElement>('.header__basket-counter', this.container);
+    this.basketButton = ensureElement<HTMLButtonElement>('.header__basket', this.container);
+    this.counterElement = ensureElement<HTMLElement>('.header__basket-counter', this.container);
 
-    this._basketButton.addEventListener('click', (e: MouseEvent) => {
+    this.basketButton.addEventListener('click', () => {
       eventBroker.emit('cart:show');
     });
   }
 
   set counter(value: number) {
-    this._counterElement.textContent = value.toString();
+    this.counterElement.textContent = value.toString();
   }
 }

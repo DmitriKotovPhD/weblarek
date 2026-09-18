@@ -49,11 +49,11 @@ yarn build
 
 ## Архитектура приложения
 
-Код приложения разделен на слои согласно парадигме MVP (Model--Presenter), которая обеспечивает четкое разделение ответственности между классами слоев Model и . Каждый слой несет свой смысл и ответственность:
+Код приложения разделен на слои согласно парадигме MVP (Model-View-Presenter), которая обеспечивает четкое разделение ответственности между классами слоев Model, View, и Presenter. Каждый слой несет свой смысл и ответственность:
 
 Model - слой данных, отвечает за хранение и изменение данных.  
- - слой представления, отвечает за отображение данных на странице.  
-Presenter - презентер содержит основную логику приложения и  отвечает за связь представления и данных.
+View  - слой представления, отвечает за отображение данных на странице.  
+Presenter - презентер содержит основную логику приложения и отвечает за связь представления и данных.
 
 Взаимодействие между классами обеспечивается использованием событийно-ориентированного подхода. Модели и Представления генерируют события при изменении данных или взаимодействии пользователя с приложением, а Презентер обрабатывает эти события используя методы как Моделей, так и Представлений.
 
@@ -203,17 +203,17 @@ Presenter - презентер содержит основную логику п
 #### Класс Catalog
 Осуществляет хранение товаров в памяти приложения.
 
-Конструктор класса не принимает параметров.  
+Конструктор класса:
+`constructor(protected eventBroker: IEvents)` в конструктор передаётся ссылка на инстанс бркера событий.
 
 Поля класса:  
-`productList: IProduct[]` массив товаров.  
-`selectedProduct: IProduct | null` текущий выбранный товар, используется для манипуляций с одним товаром в одну единицу времени. Используется для подробного отображения товара.
+`private productList: IProduct[]` массив товаров.  
+`private selectedProduct: IProduct | null` текущий выбранный товар, используется для манипуляций с одним товаром в одну единицу времени. Используется для подробного отображения товара.
 
 Методы класса:  
 `getProductList(): IProduct[]` получить массив товаров из памяти приложения  
 `setProductList(products: IProduct[]): void` сохранить массив товаров в память приложения  
 `getProduct(productId: string) : IProduct | null` получить произвольный товар по заданному id  
-`addProduct(product: IProduct): void` добавить единицу товара в массив товаров  
 `getSelectedProduct(): IProduct | null` получить выбранный товар  
 `setSelectedProduct(productId: string): void` сохранить выбранный товар 
 <br/>
@@ -229,7 +229,8 @@ Presenter - презентер содержит основную логику п
 Корзина с товарами для оформления заказа. Это временное хранилище списка товаров, выбранных пользователем для дальнейшей покупки. 
 Товары можно добавлять в корзину, удалять из корзины. Есть функционал динамического подсчёта количества товаров и подытога стоимости.  
 
-Конструктор класса не принимает параметров.  
+Конструктор класса:
+`constructor(protected eventBroker: IEvents)` в конструктор передаётся ссылка на инстанс бркера событий.
 
 Поля класса:  
 `itemsList: IProduct[]` массив товаров (в корзине), выбранных покупателем для покупки.
@@ -255,14 +256,15 @@ Presenter - презентер содержит основную логику п
 Описывает сущность покупателя. Хранит данные покапателя, необходимые для оформления заказа: выбранный способ оплаты, email, телефон, адрес (для чеков и доставки).
 Предоставляет функционал валидации данных.
 
-Конструктор класса не принимает параметров.  
+Конструктор класса:
+`constructor(protected eventBroker: IEvents)` в конструктор передаётся ссылка на инстанс бркера событий.
 
 Поля класса:  
-`payment: TPayment` сохранённый метод оплаты  
-`email: string`  email-адрес покупателя  
-`phone: string` номер контактного телефона  
-`address: string`  адрес (для чеков и доставки)  
-`_validators: Map`  карта функций-валидаторов для полей класса
+`private payment: TPayment` сохранённый метод оплаты  
+`private email: string`  email-адрес покупателя  
+`private phone: string` номер контактного телефона  
+`private address: string`  адрес (для чеков и доставки)  
+`private validators: Map`  карта функций-валидаторов для полей класса
 
 
 События:  
@@ -320,8 +322,8 @@ Presenter - презентер содержит основную логику п
 `constructor(container: HTMLElement, protected eventBroker: IEvents)`  
 
 Поля класса:  
-`protected _basketButton: HTMLButtonElement`  кнопка корзины  
-`protected _counterElement: HTMLElement` счётчик в шапке  
+`protected basketButton: HTMLButtonElement`  кнопка корзины  
+`protected counterElement: HTMLElement` счётчик в шапке  
 
 Методы класса:  
 `set counter(value: number)` установить значение счётчика товаров в корзине
@@ -340,10 +342,9 @@ Presenter - презентер содержит основную логику п
 
 
 Конструктор класса:  
-`constructor(container: HTMLElement, protected eventBroker?: IEvents)`
+`constructor(container: HTMLElement)`
 
 Поля класса: 
-<!-- `protected catalog: HTMLElement` -->
 `container: HTMLElement` корневой элемент компонента (карточки) в DOM.  Наследует от Component.
 
 Методы класса: 
@@ -372,8 +373,8 @@ Presenter - презентер содержит основную логику п
 и ссылка на инстанс брокера событий.  
 
 Поля класса:   
-`private _content: HTMLElement`  содержимое
-`private _closeButton: HTMLButtonElement`  кнопка закрытия
+`private contentElement: HTMLElement`  содержимое
+`private closeButton: HTMLButtonElement`  кнопка закрытия
 
 Методы класса:  
 `set content(value: HTMLElement)`  установить контент
@@ -385,7 +386,7 @@ Presenter - презентер содержит основную логику п
 #### Интерфейс ICartView
 `items: HTMLElement[]`  массив DOM-элементов, карточек товара, для отображения в корзине  
 `subtotal: number`  текущий подытог суммы стоимостей товаров в корзине  
-
+`checkoutEnabled: boolean` состояние активности кнопки оформления 
 
 #### Класс CartView
 Отвечает за отображение корзины с товарами. Наследует от Component. 
@@ -397,7 +398,7 @@ Presenter - презентер содержит основную логику п
 
 Поля класса:  
 `protected itemsContainer: HTMLElement` корневой элемент (узел DOM) списка товаров в корзине  
-`protected subtotal: HTMLElelement` элемент с ценой подытога стоимости корзины  
+`protected subtotalElement: HTMLElement` элемент с ценой подытога стоимости корзины  
 `protected checkoutButton: HTMLButtonElement` кнопка перехода к оформлению покупки  
 
 События:  
@@ -405,9 +406,8 @@ Presenter - презентер содержит основную логику п
 
 Методы класса:  
 `set items(value: HTMLElement[])` установить список товаров в корзине  
-`set subtotalContent(value: number)` установить значение строки подытога оценки стоимости корзины  
+`set subtotal(value: number)` установить значение строки подытога оценки стоимости корзины  
 `set checkoutEnabled(enabled: boolean)` вкл/выкл кнопки оформления заказа  
-`addItem(value: HTMLElement): void` добавить товар  
 
 
 
@@ -420,13 +420,12 @@ Presenter - презентер содержит основную логику п
 Базовый абстрактный класс отображения карточки товара. Наследует от Component.
 
 Конструктор класса:  
-`constructor(container: HTMLElement)` в конструктор передаётся корневой элемент компонента в DOM, 
-и, опционально, объект для инициализации экземпляра класса.  
+`constructor(container: HTMLElement)` в конструктор передаётся корневой элемент компонента в DOM.  
 
 Поля класса:  
 `container: HTMLElement` корневой элемент компонента (карточки) в DOM. Наследует от Component.  
-`protected title: HTMLElement` элемент заголовка  
-`protected price: HTMLElement` элемент с ценой товара  
+`protected titleElement: HTMLElement` элемент заголовка  
+`protected priceElement: HTMLElement` элемент с ценой товара  
 
 Методы класса:  
 `set title(value: string)`  установить текст заголовка товара.  
@@ -447,13 +446,13 @@ Presenter - презентер содержит основную логику п
 Использует шаблон с id=`card-catalog`.  
 
 Конструктор класса:  
-`constructor(container: HTMLElement)` в конструктор передаётся корневой элемент компонента в DOM, 
-и, опционально, объект для инициализации экземпляра класса.  
+`constructor(container: HTMLElement, eventHandlers?: IProductEvents)` в конструктор передаётся корневой элемент компонента в DOM, 
+и ссылка на объект с обработчиками событий.
 
 Поля класса:  
 `container: HTMLElement` корневой элемент компонента (карточки) в DOM.  Наследует от Component.   
-`protected _category: HTMLElement` элемент с категорией товара.  
-`protected _image: HTMLImageElement` элемент с картинкой товара.  
+`protected categoryElement: HTMLElement` элемент с категорией товара.  
+`protected imageElement: HTMLImageElement` элемент с картинкой товара.  
 
 Методы класса:    
 `set category(value: string)` установить текст наименования категории товара  
@@ -466,28 +465,31 @@ Presenter - презентер содержит основную логику п
 
 #### Интерфейс IProductCardFull  
 Берёт из интерфейса описания товара `IProduct` все поля, кроме тех, что не нужно отображать во фронтэнде:
-`Omit<IProduct, 'id'>`
+`Omit<IProduct, 'id'> & { actionButtonText: string, actionButtonEnabled: boolean }`
+Добавляет к ним поля `actionButtonText` и `actionButtonEnabled`.
 Список полей IProductCardFull:  
 - `title`
 - `description`
 - `image`
 - `category`
 - `price`
+- `actionButtonText`
+- `actionButtonEnabled`
 
 
 #### Класс ProductCardFull  
 Класс карточки товара для отображения полной информации о товаре. Наследует от ProductCardCatalog.
 Это вариант отображения карточки товара в полном варианте исполнения: с картинкой, и прочими полями.
-Использует шаблон с id=`card-pre`.
+Использует шаблон с id=`card-preview`.
 
 
 Конструктор класса:  
-`constructor(container: HTMLElement)` в конструктор передаётся корневой элемент компонента в DOM, 
-и, опционально, объект для инициализации экземпляра класса.  
+`constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента в DOM,  ссылка на инстанс брокера событий.
 
 Поля класса:  
-`protected _description: HTMLElement` элемент с подробным текстовым описанием товара.  
-`protected _actionButton: HTMLButtonElement` элемент кнопки добавления/удаления товара в корзину.    
+`protected eventBroker: IEvents` ссылка на инстанс брокера событий
+`protected descriptionElement: HTMLElement` элемент с подробным текстовым описанием товара.  
+`protected actionButton: HTMLButtonElement` элемент кнопки добавления/удаления товара в корзину.    
 
 Методы класса:  
 `set description(value: string)` установить текст подробного описания товара.  
@@ -504,17 +506,17 @@ Presenter - презентер содержит основную логику п
 
 
 #### Класс ProductCardCart
-Класс для отображения карточки товара в корзине. Наследует от ProductCart.
+Класс для отображения карточки товара в корзине. Наследует от ProductCard.
 Минималистичный вариант отображения карточки товара, без картинки.
 Использует шаблон с id=`card-basket`.  
 
 Конструктор класса:  
-`constructor(container: HTMLElement)` в конструктор передаётся корневой элемент компонента в DOM, 
-и, опционально, объект для инициализации экземпляра класса.  
+`constructor(container: HTMLElement, eventHandlers?: IProductEvents)` в конструктор передаётся корневой элемент компонента в DOM, 
+и ссылка на объект с обработчиками событий.
 
 Поля класса:  
-`protected _index: HTMLElement` порядковый номер товара в списке корзины.  
-`protected _buttonDelete: HTMLButtonElement` кнопка удаления товара из корзины.  
+`protected indexElement: HTMLElement` порядковый номер товара в списке корзины.  
+`protected buttonDelete: HTMLButtonElement` кнопка удаления товара из корзины.  
 
 Методы класса:  
 `set index(value: number)` установить значение порядкового номера товара в списке корзины.   
@@ -531,30 +533,27 @@ Presenter - презентер содержит основную логику п
 - отображение ошибок  
 
 Конструктор класса:
-`constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента (формы) в DOM,
-и ссылка на инстанс брокера событий.  
+`constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента (формы) в DOM,  ссылка на инстанс брокера событий.
 
 Поля класса:  
 `protected eventBroker: IEvents`  брокер событий
-`protected _fields: HTMLInputElement[]`  поля формы
-`protected _actionButton: HTMLButtonElement`  кнопка действия
-`protected _errors: HTMLElement`    область для текста ошибок
+`protected actionButton: HTMLButtonElement`  кнопка действия
+`protected errorsField: HTMLElement`    область для текста ошибок
 
-`protected _subscribersInput: Map<string, Function>`  карта обработчиков событий, используется для подписки слушателей на единый прослушиватель события input на контейнере.
+`protected subscribersInput: Map<string, Function>`  карта обработчиков событий, используется для подписки слушателей на единый прослушиватель события input на контейнере.
 Это пример формата реализации прослушивателей с одним обработчиком на контейнере  
 вместо назначения прослуживателя событий каждому полю. 
 В случае, когда полей будет несколько десятков или сотня, такой подход будет более эффективным. 
-Данный подход реализован потому, что я так хочу.
+
 
 
 Методы класса:  
-`set errors(errors: string[])` установить тексты ошибок в UI  
-`enableActionButton(enable: boolean): void`  вкл/выкл кнопки дйествия  
 `handleInput(name: string, e: InputEvent): void` проксии-метод для вызова обработчика события input для конкретного поля.  
 `subscribeInputListener(input: HTMLInputElement, handler: Function)` подписать обработчик события ввода конкретного поля на исполнение в функцию-слушатель событий input на контейнере.  
-ВНИМАНИЕ: на одно поле - один слушатель. Большего не надо. В случае необходимости, возможна гибкая реализация с несколькими слушателями.  
+ВНИМАНИЕ: на одно поле - один слушатель. В случае необходимости, возможна гибкая реализация с несколькими слушателями.  
 
-`enableActionButton(enable: boolean): void` включить/выключить способность кнопки реагировать на действия пользователя       
+`set errors(errors: string[])` установить тексты ошибок в UI   
+`set actionButtonEnabled(enable: boolean)` включить/выключить способность кнопки реагировать на действия пользователя       
 <br/>
 <br/>
 
@@ -562,6 +561,7 @@ Presenter - презентер содержит основную логику п
 Интерфейс включает необходимые поля из IBuyer, плюс поле `errors` для установки текстов ошибок в UI  
 `payment: TPayment`  способ оплаты  
 `address: string`  адрес  
+`actionButtonEnabled: boolean` вкл/выкл способности кнопки действия реагировать на пользователя
 `errors: string[]`  массив ошибок валидации  
 
 #### Класс FormOrder
@@ -571,13 +571,12 @@ Presenter - презентер содержит основную логику п
 - указания адреса доставки
 
 Конструктор класса:  
-`constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента (формы) в DOM,
-и ссылка на инстанс брокера событий.  
+`constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента (формы) в DOM,  ссылка на инстанс брокера событий.
 
 Поля класса:  
 `protected eventBroker: IEvents`   брокер событий
-`protected _paymentMethodSelectors: HTMLButtonElement[]`  переключатели/кнопки методов оплаты
-`protected _address: HTMLInputElement` адрес  
+`protected paymentMethodSelectors: HTMLButtonElement[]`  переключатели/кнопки методов оплаты
+`protected addressField: HTMLInputElement` адрес  
 
 События:   
 `formData:changed` событие означает: данные формы изменились    
@@ -595,6 +594,7 @@ Presenter - презентер содержит основную логику п
 Интерфейс включает необходимые поля из IBuyer, плюс поле `errors` для установки текстов ошибок в UI  
 `email: string`  email 
 `phone: string`    телефон
+`actionButtonEnabled: boolean` вкл/выкл способности кнопки действия реагировать на пользователя
 `errors: string[]`    массив ошибок валидации 
 
 
@@ -606,13 +606,12 @@ Presenter - презентер содержит основную логику п
 - кнопка "Оплатить"
 
 Конструктор класса:
-`constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента (формы) в DOM,
-и ссылка на инстанс брокера событий.
+`constructor(container: HTMLElement, protected eventBroker: IEvents)` в конструктор передаётся корневой элемент компонента (формы) в DOM,  ссылка на инстанс брокера событий.
 
 Поля класса:   
 `protected eventBroker: IEvents`   брокер событий  
-`protected _email: HTMLInputElement`  email  
-`protected _phone: HTMLInputElement`  телефон  
+`protected emailField: HTMLInputElement`  email  
+`protected phoneField: HTMLInputElement`  телефон  
 
 Методы класса:  
 `set email(value: string)` установить значение поля email  
@@ -636,9 +635,8 @@ Presenter - презентер содержит основную логику п
 и ссылка на инстанс брокера событий.  
 
 Поля класса:  
-`private _title: HTMLElement`  заголовок (задел на будущее)  
-`private _description: HTMLElement`  основной текст сообщения  
-`private _closeButton: HTMLButtonElement`  кнопка закрытия  
+`private descriptionElement: HTMLElement`  основной текст сообщения  
+`private closeButton: HTMLButtonElement`  кнопка закрытия  
 
 Методы класса:  
 `set total(value: number)`  установить основной текст сообщения в окне, с указанием суммы конкретного заказа.    
@@ -655,7 +653,7 @@ Presenter - презентер содержит основную логику п
 - `catalog:select` событие изменения выбранного товара
 - `catalog:item-click` событие означает клик по карточке токара. По нажатию на карточку товара в каталоге, следует показать представление (модальное окно) товара с полным описанием товара.
 - `cart:data-changed` срабатывает при изменении состава данных корзины: добавить товар в корзину, удалить товар из корзины
-- `cart:add` событие добавления выбранного товара в корзину
+- `cart:action` событие клика по кнопке действия. Действием может быть добавление, либо удаление товара из корзины.
 - `cart:remove` событие удаления товара из корзины
 - `cart:show` показать корзину. Вызывается из Header, по нажатию на кнопку корзины, 
 - `formData:changed` событие ввода в поля формы
@@ -663,7 +661,4 @@ Presenter - презентер содержит основную логику п
 - `cart:submit` событие отправки корзины на этап оформления заказа. Вызывается из корзины, по нажатию кнопки отправки корзины, для вызова диалога оформления заказа.
 - `order:submit` событие отправки формы с данными заказа (форма со способом оплаты и адресом)
 - `contacts:submit` событие отправки формы с контактами
-- `order:success` показать пользователю окно об успешном размещении заказа.
 - `success:ok` кнопка "OK" основного действия в окне в результатом заказа была нажата
-- `modal:open` модальное окно было открыто
-- `modal:close` модальное окно было закрто

@@ -1,30 +1,28 @@
-import { ensureAllElements, ensureElement } from "@/utils/utils";
+import { ensureElement } from "@/utils/utils";
 import { Component } from "../base/Component";
 import { IEvents } from "../base/Events";
-import { IUIEvents } from "@/types";
 
 export abstract class Form<T> extends Component<T> {
-  protected _fields: HTMLInputElement[];
-  protected _actionButton: HTMLButtonElement;
-  protected _errors: HTMLElement;
+  protected actionButton: HTMLButtonElement;
+  protected errorsField: HTMLElement;
 
-  protected _subscribersInput: Map<string, Function>;
+  protected subscribersInput: Map<string, Function>;
   
-  constructor(container: HTMLElement, protected eventBroker: IEvents, eventHandlers?: IUIEvents) {
+  constructor(container: HTMLElement, protected eventBroker: IEvents) {
     super(container);
 
-    this._fields = ensureAllElements<HTMLInputElement>('.form__input', this.container);
-    this._actionButton = ensureElement<HTMLButtonElement>('.modal__actions [type="submit"]', this.container);
-    this._errors = ensureElement<HTMLElement>('.form__errors', this.container);
+    this.actionButton = ensureElement<HTMLButtonElement>('.modal__actions [type="submit"]', this.container);
+    this.errorsField = ensureElement<HTMLElement>('.form__errors', this.container);
     
     // Карта подписки полей с типом input, на событие ввода данных, в формате "элемент <-> обработчик"
     // Один слушатель события ввода в поля input
-    this._subscribersInput = new Map();
+    this.subscribersInput = new Map();
 
     // Обработчик события отправки формы
-    if(eventHandlers?.submit) {
-      this.container.addEventListener('submit', (e: Event) => { if(eventHandlers?.submit) eventHandlers.submit(e) });
-    }
+    this.container.addEventListener('submit', (e: Event) => {
+      e.preventDefault();
+    });
+    
 
     // Обработка события input для всех полей input
     // единым обработчиком, прицепленным на контейнер
@@ -36,15 +34,16 @@ export abstract class Form<T> extends Component<T> {
         return;
       }
 
-      this.handleInput(target.name.toString(), e);
+      this.handleInput(target.name.toString());
     });
   }
 
+
   // Прокси обработки события input 
-  handleInput(name: string, e: Event): void {
-    if(this._subscribersInput.has(name)) {
+  handleInput(name: string): void {
+    if(this.subscribersInput.has(name)) {
       // Обработчик события для конкретного элемента, на котором событие произошло
-      const handler = this._subscribersInput.get(name)!;
+      const handler = this.subscribersInput.get(name)!;
       handler();
     }
   }
@@ -55,17 +54,17 @@ export abstract class Form<T> extends Component<T> {
   subscribeInputListener(input: HTMLInputElement, handler: Function) {
     const name = input?.name.toString();
     if(name) {
-      this._subscribersInput.set(name, handler);
+      this.subscribersInput.set(name, handler);
     }
   }
 
   // Вывод текста ошибок в UI
   set errors(errors: string[]) {
-    this._errors.textContent = errors.join(" , ");
+    this.errorsField.textContent = errors.join(" , ");
   }
 
   // Включить-выключить кнопку действия (отправки) формы
-  enableActionButton(enable: boolean): void {
-    this._actionButton.disabled = !enable;
+  set actionButtonEnabled(enabled: boolean) {
+    this.actionButton.disabled = !enabled;
   }
 }

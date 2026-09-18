@@ -38,6 +38,8 @@ export interface IBuyer {
     address?: string;
 }
 
+export const BUYER_FIELDS = ['payment', 'email', 'phone', 'address'] as const satisfies Readonly<Array<keyof IBuyer>>;
+
 export type BuyerValidationErrors = Partial<Record<keyof IBuyer, string>>;
 
 

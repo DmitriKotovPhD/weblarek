@@ -5,15 +5,17 @@ import { categoryMap } from "@/utils/constants";
 
 export type IProductCardCatalog = IProductCard & Pick<IProduct, 'category' | 'image'>;
 
+type CategoryName = keyof typeof categoryMap;
+
 export class ProductCardCatalog<T extends IProductCardCatalog> extends ProductCard<T> {
-  protected _category: HTMLElement;
-  protected _image: HTMLImageElement;
+  protected categoryElement: HTMLElement;
+  protected imageElement: HTMLImageElement;
   
   constructor(container: HTMLElement, eventHandlers?: IProductEvents) {
     super(container);
 
-    this._category = ensureElement<HTMLElement>('.card__category', this.container);
-    this._image = ensureElement<HTMLImageElement>('.card__image', this.container);
+    this.categoryElement = ensureElement<HTMLElement>('.card__category', this.container);
+    this.imageElement = ensureElement<HTMLImageElement>('.card__image', this.container);
 
     // Обработка клика на контейнере.
     // TODO: 
@@ -28,20 +30,20 @@ export class ProductCardCatalog<T extends IProductCardCatalog> extends ProductCa
 
   // Установить текст наименования категории товара
   set category(value: string) {
-    this._category.textContent = value;
+    this.categoryElement.textContent = value;
 
     this.updateCardBackground(value);
   }
 
   // Установить изображение
   set image(value: string) {
-    this.setImage(this._image, value, this._title?.textContent || '');
+    this.setImage(this.imageElement, value, this.titleElement?.textContent || '');
   }
 
   protected updateCardBackground(category: string) {
-    const customBackground = Object.hasOwn(categoryMap, category) ? {...categoryMap}[category] : undefined;
-    if(customBackground) {
-      this._category.classList.replace(this._category.classList[1], customBackground);
+    // Удалить все категории из списка классов элемента, и назначить/оставить только выбранную категорию, если она задана
+    for(const name in categoryMap) {
+      this.categoryElement.classList.toggle(categoryMap[name as CategoryName], name === category);
     }
   }
 }
